@@ -7,11 +7,11 @@ export async function GET(req: NextRequest) {
   const origin = req.headers.get('origin');
   try {
     await connectDB();
-    const users = await User.find({})
+    const users = (await User.find({})
       .select('name email points level')
       .sort({ points: -1 })
       .limit(100)
-      .lean();
+      .lean()) as unknown as Array<{ _id: unknown; name: string; email: string; points?: number; level?: number }>;
 
     const leaderboard = users.map((u) => ({
       id: String(u._id),

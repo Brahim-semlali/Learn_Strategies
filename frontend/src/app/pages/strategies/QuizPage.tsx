@@ -10,7 +10,7 @@ export const QuizPage = () => {
   const { strategy } = useParams<{ strategy: string }>();
   const navigate = useNavigate();
   const { addPoints, unlockBadge, incrementStreak } = useGame();
-  const [course, setCourse] = useState<Course | null>(null);
+  const [_course, setCourse] = useState<Course | null>(null);
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -138,7 +138,7 @@ export const QuizPage = () => {
             <p className="text-lg text-gray-600 mb-8">
               Vous avez répondu correctement à {score} question{score > 1 ? 's' : ''} sur {questions.length}
             </p>
-            {parseInt(finalScore, 10) === 100 && (
+            {parseInt(String(finalScore), 10) === 100 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

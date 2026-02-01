@@ -11,7 +11,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'courseId requis' }, { status: 400 });
     }
     await connectDB();
-    const quiz = await Quiz.findOne({ courseId }).lean();
+    const quiz = await Quiz.findOne({ courseId }).lean() as {
+      _id: unknown;
+      courseId: unknown;
+      title: string;
+      questions: unknown[];
+    } | null;
     if (!quiz) return NextResponse.json({ error: 'Quiz introuvable pour ce cours' }, { status: 404 });
     return NextResponse.json({
       id: String(quiz._id),

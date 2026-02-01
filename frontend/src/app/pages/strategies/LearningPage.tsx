@@ -32,8 +32,9 @@ export const LearningPage = () => {
     progressApi
       .get(course.id)
       .then((data) => {
-        if ('completedSections' in data) {
-          setCompletedSections(data.completedSections || []);
+        const payload = data as { completedSections?: number[] };
+        if (payload && Array.isArray(payload.completedSections)) {
+          setCompletedSections(payload.completedSections);
         }
       })
       .catch(() => {});

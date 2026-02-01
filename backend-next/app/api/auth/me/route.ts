@@ -13,9 +13,22 @@ export async function GET(req: NextRequest) {
       return jsonWithCors({ error: 'Non authentifié' }, 401, origin);
     }
     await connectDB();
-    const user = await User.findById(authUser._id).lean();
+    const user = await User.findById(authUser._id).lean() as {
+      _id: unknown;
+      email: string;
+      name: string;
+      role: string;
+      points: number;
+      level: number;
+    } | null;
     if (!user) return jsonWithCors({ error: 'Utilisateur introuvable' }, 404, origin);
-    const game = await UserGame.findOne({ userId: user._id }).lean();
+    const game = await UserGame.findOne({ userId: user._id }).lean() as {
+      points: number;
+      level: number;
+      streak: number;
+      badges: unknown[];
+      progress?: Record<string, number>;
+    } | null;
     return jsonWithCors(
       {
         user: {

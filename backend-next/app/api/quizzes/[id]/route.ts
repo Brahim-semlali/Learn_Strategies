@@ -10,7 +10,12 @@ export async function GET(
   try {
     const { id } = await params;
     await connectDB();
-    const quiz = await Quiz.findById(id).lean();
+    const quiz = await Quiz.findById(id).lean() as {
+      _id: unknown;
+      courseId: unknown;
+      title: string;
+      questions: unknown[];
+    } | null;
     if (!quiz) return NextResponse.json({ error: 'Quiz introuvable' }, { status: 404 });
     return NextResponse.json({
       id: String(quiz._id),
@@ -46,7 +51,12 @@ export async function PUT(
         },
       },
       { new: true }
-    ).lean();
+    ).lean() as {
+      _id: unknown;
+      courseId: unknown;
+      title: string;
+      questions: unknown[];
+    } | null;
     if (!quiz) return NextResponse.json({ error: 'Quiz introuvable' }, { status: 404 });
     return NextResponse.json({
       id: String(quiz._id),

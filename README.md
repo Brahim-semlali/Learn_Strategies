@@ -29,6 +29,25 @@ strat-quest-master/
 
 ## 🚀 Installation & Setup
 
+### Option A : Installation avec Docker (recommandé)
+
+Si vous avez **Docker** et **Docker Compose**, vous pouvez tout lancer en quelques commandes :
+
+```bash
+git clone https://github.com/AmbitiousFlowDev/strat-quest.git
+cd strat-quest
+docker compose up -d --build
+docker compose exec backend npm run seed:all
+```
+
+Puis ouvrir **http://localhost:4173** et se connecter avec **admin@stratquest.com** / **Admin123!**
+
+→ **Guide complet (commandes, dépannage, ports) :** [DOCKER.md](DOCKER.md)
+
+---
+
+### Option B : Installation manuelle (Node.js + MongoDB)
+
 > **Guide détaillé :** voir [SETUP.md](SETUP.md) pour les étapes complètes de clonage et démarrage.
 
 ### Prerequisites

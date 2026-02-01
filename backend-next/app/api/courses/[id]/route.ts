@@ -10,7 +10,16 @@ export async function GET(
   try {
     const { id } = await params;
     await connectDB();
-    const course = await Course.findById(id).lean();
+    const course = await Course.findById(id).lean() as {
+      _id: unknown;
+      slug: string;
+      title: string;
+      description: string;
+      sections: unknown[];
+      order: number;
+      color?: string;
+      bgColor?: string;
+    } | null;
     if (!course) return NextResponse.json({ error: 'Cours introuvable' }, { status: 404 });
     return NextResponse.json({
       id: String(course._id),
@@ -54,7 +63,16 @@ export async function PUT(
         },
       },
       { new: true }
-    ).lean();
+    ).lean() as {
+      _id: unknown;
+      slug: string;
+      title: string;
+      description: string;
+      sections: unknown[];
+      order: number;
+      color?: string;
+      bgColor?: string;
+    } | null;
     if (!course) return NextResponse.json({ error: 'Cours introuvable' }, { status: 404 });
     return NextResponse.json({
       id: String(course._id),

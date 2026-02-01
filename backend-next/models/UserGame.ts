@@ -37,7 +37,8 @@ const UserGameSchema = new mongoose.Schema<IUserGame>(
     level: { type: Number, default: 1 },
     streak: { type: Number, default: 0 },
     lastActiveDate: String,
-    badges: { type: [mongoose.Schema.Types.Mixed], default: defaultBadges },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Mongoose types are strict for array of Mixed
+    badges: { type: [mongoose.Schema.Types.Mixed], default: defaultBadges } as any,
     progress: { type: mongoose.Schema.Types.Mixed, default: {} },
   },
   { timestamps: { createdAt: false, updatedAt: true } }

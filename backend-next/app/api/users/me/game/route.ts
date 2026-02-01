@@ -9,7 +9,14 @@ export async function GET(req: NextRequest) {
     const authUser = await getAuthUser(req);
     if (!authUser) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
     await connectDB();
-    const game = await UserGame.findOne({ userId: authUser._id }).lean();
+    const game = await UserGame.findOne({ userId: authUser._id }).lean() as {
+      points: number;
+      level: number;
+      streak: number;
+      lastActiveDate?: string;
+      badges: unknown[];
+      progress?: Record<string, number>;
+    } | null;
     if (!game) {
       return NextResponse.json({
         points: 0,
@@ -58,7 +65,14 @@ export async function PATCH(req: NextRequest) {
       { userId: authUser._id },
       { $set: update },
       { new: true, upsert: true }
-    ).lean();
+    ).lean() as {
+      points: number;
+      level: number;
+      streak: number;
+      lastActiveDate?: string;
+      badges: unknown[];
+      progress?: Record<string, number>;
+    } | null;
     if (body.points != null || body.level != null) {
       await User.findByIdAndUpdate(authUser._id, {
         $set: {

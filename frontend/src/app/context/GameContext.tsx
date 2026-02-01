@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
-import { gameApi, progressApi, pointsApi, type GameState } from '@/app/shared/api/client';
+import { gameApi, type GameState } from '@/app/shared/api/client';
 
 interface Badge {
   id: string;
@@ -45,7 +45,7 @@ const defaultBadges: Badge[] = [
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [points, setPoints] = useState(0);
   const [level, setLevel] = useState(1);
   const [streak, setStreak] = useState(0);

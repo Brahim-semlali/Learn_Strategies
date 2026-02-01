@@ -6,7 +6,16 @@ import { getAuthUser } from '@/lib/auth';
 export async function GET() {
   try {
     await connectDB();
-    const courses = await Course.find().sort({ order: 1 }).lean();
+    const courses = (await Course.find().sort({ order: 1 }).lean()) as unknown as Array<{
+      _id: unknown;
+      slug: string;
+      title: string;
+      description: string;
+      sections: unknown[];
+      order: number;
+      color?: string;
+      bgColor?: string;
+    }>;
     return NextResponse.json(
       courses.map((c) => ({
         id: String(c._id),

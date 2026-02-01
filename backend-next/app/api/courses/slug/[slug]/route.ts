@@ -9,7 +9,16 @@ export async function GET(
   try {
     const { slug } = await params;
     await connectDB();
-    const course = await Course.findOne({ slug }).lean();
+    const course = await Course.findOne({ slug }).lean() as {
+      _id: unknown;
+      slug: string;
+      title: string;
+      description: string;
+      sections: unknown[];
+      order: number;
+      color?: string;
+      bgColor?: string;
+    } | null;
     if (!course) return NextResponse.json({ error: 'Cours introuvable' }, { status: 404 });
     return NextResponse.json({
       id: String(course._id),

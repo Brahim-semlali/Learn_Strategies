@@ -1,0 +1,42 @@
+# StratQuest – stack complète (MongoDB + Backend + Frontend)
+services:
+  mongodb:
+    image: mongo:7
+    container_name: strat-quest-mongodb
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend-next
+      dockerfile: Dockerfile
+    container_name: strat-quest-backend
+    ports:
+      - "3002:3001"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/strat-quest
+      JWT_SECRET: ${JWT_SECRET:-ChAO2mhR4PDhmu1e1uvWj+Ej0JP5koFnEgy3/xR3Ovs=}
+      NODE_ENV: production
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # URL de l'API vue depuis le navigateur (port 3002 pour éviter conflit avec dev local)
+        VITE_API_URL: http://localhost:3002/api
+    container_name: strat-quest-frontend
+    ports:
+      - "4173:4173"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:

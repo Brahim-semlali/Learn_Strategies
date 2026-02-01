@@ -14,7 +14,15 @@ export async function POST(req: NextRequest) {
       return jsonWithCors({ error: 'Email et mot de passe requis' }, 400, origin);
     }
     await connectDB();
-    const user = await User.findOne({ email: String(email).trim().toLowerCase() }).select('+password').lean();
+    const user = await User.findOne({ email: String(email).trim().toLowerCase() }).select('+password').lean() as {
+      _id: unknown;
+      email: string;
+      password: string;
+      name: string;
+      role: string;
+      points: number;
+      level: number;
+    } | null;
     if (!user) {
       return jsonWithCors({ error: 'Email ou mot de passe incorrect' }, 401, origin);
     }

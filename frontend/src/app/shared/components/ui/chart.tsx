@@ -180,20 +180,28 @@ function ChartTooltipContent({
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
         {payload.map((item, index) => {
-          const key = `${nameKey || item.name || item.dataKey || "value"}`;
-          const itemConfig = getPayloadConfigFromPayload(config, item, key);
-          const indicatorColor = color || item.payload.fill || item.color;
+          const i = item as unknown as Record<string, unknown>;
+          const key = `${nameKey || i.name || i.dataKey || "value"}`;
+          const itemConfig = getPayloadConfigFromPayload(config, i, key);
+          const payloadObj = i.payload as Record<string, unknown> | undefined;
+          const indicatorColor = color || (payloadObj?.fill as string) || (i.color as string);
 
           return (
             <div
-              key={item.dataKey}
+              key={String(i.dataKey ?? index)}
               className={cn(
                 "[&>svg]:text-muted-foreground flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5",
                 indicator === "dot" && "items-center",
               )}
             >
-              {formatter && item?.value !== undefined && item.name ? (
-                formatter(item.value, item.name, item, index, item.payload)
+              {formatter && i?.value !== undefined && i.name != null ? (
+                (formatter as (v: unknown, n: unknown, it: unknown, idx: number, p: unknown) => React.ReactNode)(
+                  i.value,
+                  i.name,
+                  i,
+                  index,
+                  i.payload
+                )
               ) : (
                 <>
                   {itemConfig?.icon ? (
@@ -229,12 +237,12 @@ function ChartTooltipContent({
                     <div className="grid gap-1.5">
                       {nestLabel ? tooltipLabel : null}
                       <span className="text-muted-foreground">
-                        {itemConfig?.label || item.name}
+                        {((itemConfig?.label as React.ReactNode) ?? i.name) as React.ReactNode}
                       </span>
                     </div>
-                    {item.value && (
+                    {i.value != null && (
                       <span className="text-foreground font-mono font-medium tabular-nums">
-                        {item.value.toLocaleString()}
+                        {Number(i.value).toLocaleString()}
                       </span>
                     )}
                   </div>
@@ -275,13 +283,14 @@ function ChartLegendContent({
         className,
       )}
     >
-      {payload.map((item) => {
-        const key = `${nameKey || item.dataKey || "value"}`;
-        const itemConfig = getPayloadConfigFromPayload(config, item, key);
+      {payload.map((item, index) => {
+        const i = item as unknown as Record<string, unknown>;
+        const key = `${nameKey || i.dataKey || "value"}`;
+        const itemConfig = getPayloadConfigFromPayload(config, i, key);
 
         return (
           <div
-            key={item.value}
+            key={String(i.value ?? index)}
             className={cn(
               "[&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3",
             )}
@@ -292,11 +301,11 @@ function ChartLegendContent({
               <div
                 className="h-2 w-2 shrink-0 rounded-[2px]"
                 style={{
-                  backgroundColor: item.color,
+                  backgroundColor: i.color as string | undefined,
                 }}
               />
             )}
-            {itemConfig?.label}
+            {(itemConfig?.label as React.ReactNode) ?? null}
           </div>
         );
       })}

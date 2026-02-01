@@ -159,6 +159,55 @@ L’application tourne sur **http://localhost:5173**.
 
 ---
 
+## Lancer tout le projet avec Docker
+
+Si vous avez **Docker** et **Docker Compose** installés, vous pouvez lancer l’application complète (MongoDB + backend + frontend) en une commande.
+
+### Prérequis
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (ou Docker + Docker Compose)
+
+### Commandes
+
+À la **racine du projet** (`strat-quest`) :
+
+```bash
+# Construire et démarrer tous les services
+docker compose up -d --build
+
+# Premier lancement : créer le compte admin ET les cours/quiz (obligatoire)
+docker compose exec backend npm run seed:all
+```
+
+Sans cette étape, la base est vide : connexion admin impossible et « Cours introuvable » au clic sur une stratégie.
+
+### Accès
+
+| Service   | URL                    |
+|----------|------------------------|
+| Frontend | http://localhost:4173  |
+| API      | http://localhost:3002  |
+| MongoDB  | localhost:27018         |
+
+**Connexion admin (après avoir exécuté le seed) :** **admin@stratquest.com** / **Admin123!**
+
+### Commandes utiles
+
+```bash
+# Voir les logs
+docker compose logs -f
+
+# Arrêter les conteneurs
+docker compose down
+
+# Arrêter et supprimer les données MongoDB
+docker compose down -v
+```
+
+Pour personnaliser le `JWT_SECRET`, créez un fichier `.env` à la racine avec `JWT_SECRET=votre-secret` ; `docker compose` le lira automatiquement.
+
+---
+
 ## Dépannage
 
 | Problème | Solution |

@@ -31,7 +31,12 @@ export async function getAuthUser(req: NextRequest): Promise<{ _id: string; emai
   const payload = verifyToken(token);
   if (!payload) return null;
   await connectDB();
-  const user = await User.findById(payload.userId).select('_id email role name').lean();
+  const user = await User.findById(payload.userId).select('_id email role name').lean() as {
+    _id: unknown;
+    email: string;
+    role: string;
+    name: string;
+  } | null;
   return user ? { ...user, _id: String(user._id) } : null;
 }
 

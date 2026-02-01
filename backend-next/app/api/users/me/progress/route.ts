@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
       const progress = await UserProgress.findOne({
         userId: authUser._id,
         courseId,
-      }).lean();
+      }).lean() as { completedSections: number[]; progressPercent: number } | null;
       return NextResponse.json(
         progress
           ? {
@@ -24,7 +24,11 @@ export async function GET(req: NextRequest) {
           : { completedSections: [], progressPercent: 0 }
       );
     }
-    const all = await UserProgress.find({ userId: authUser._id }).lean();
+    const all = (await UserProgress.find({ userId: authUser._id }).lean()) as unknown as Array<{
+      courseId: unknown;
+      completedSections: number[];
+      progressPercent: number;
+    }>;
     const byCourse: Record<string, { completedSections: number[]; progressPercent: number }> = {};
     for (const p of all) {
       byCourse[String(p.courseId)] = {
@@ -56,7 +60,7 @@ export async function PATCH(req: NextRequest) {
         },
       },
       { new: true, upsert: true }
-    ).lean();
+    ).lean() as { completedSections: number[]; progressPercent: number } | null;
     return NextResponse.json({
       completedSections: progress?.completedSections ?? [],
       progressPercent: progress?.progressPercent ?? 0,
